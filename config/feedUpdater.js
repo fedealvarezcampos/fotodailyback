@@ -21,7 +21,9 @@ async function getNewFeedItemsFrom(feedUrl) {
 // 3
 async function getFeedUrls() {
 	const { results } = await strapi.service('api::feedsource.feedsource').find({
-		enabled: true,
+		filters: {
+			enabled: true,
+		},
 	});
 
 	return results;
@@ -31,11 +33,9 @@ async function getFeedUrls() {
 async function getNewFeedItems() {
 	let allNewFeedItems = [];
 
-	console.log('tetah');
-
 	const feeds = await getFeedUrls();
 
-	for (let i = 0; i < feeds.length; i++) {
+	for (let i = 0; i < feeds?.length; i++) {
 		const { link } = feeds[i];
 		const feedItems = await getNewFeedItemsFrom(link);
 		allNewFeedItems = [...allNewFeedItems, ...feedItems];
@@ -47,20 +47,21 @@ async function getNewFeedItems() {
 // 5
 async function main() {
 	try {
+		console.log('tetah');
+
 		const feedItems = await getNewFeedItems();
 
 		for (let i = 0; i < feedItems.length; i++) {
 			const item = feedItems[i];
 
 			const newsItem = {
+				site: item?.link?.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0],
 				title: item?.title,
 				preview: item?.contentSnippet,
 				link: item?.link,
 				creator: item?.creator,
 				sponsored: false,
 			};
-
-			console.log(newsItem);
 
 			await strapi.service('api::newsitem.newsitem').create({ data: newsItem });
 		}
