@@ -14,6 +14,7 @@
     "@strapi/plugin-i18n": "4.0.3",
     "@strapi/plugin-users-permissions": "4.0.3",
     "@strapi/strapi": "4.0.3",
+    "link-preview-js": "^2.1.8",
     "rss-parser": "^3.12.0",
     "sqlite3": "5.0.2"
   },
