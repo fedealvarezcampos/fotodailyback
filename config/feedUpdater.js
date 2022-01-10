@@ -1,3 +1,4 @@
+const { getLinkPreview } = require('link-preview-js');
 const Parser = require('rss-parser');
 
 // 1
@@ -47,23 +48,31 @@ async function getNewFeedItems() {
 // 5
 async function main() {
 	try {
-		console.log('tetah');
-
 		const feedItems = await getNewFeedItems();
 
 		for (let i = 0; i < feedItems.length; i++) {
 			const item = feedItems[i];
 
+			const linkPreview = await getLinkPreview(item?.link, {
+				headers: {
+					'user-agent': 'googlebot',
+				},
+			});
+
 			const newsItem = {
 				site: item?.link?.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0],
 				title: item?.title,
+				image: linkPreview?.images[0],
 				preview: item?.contentSnippet,
 				link: item?.link,
 				creator: item?.creator,
+				date: new Date(item?.pubDate)?.toISOString(),
 				sponsored: false,
 			};
 
 			await strapi.service('api::newsitem.newsitem').create({ data: newsItem });
+
+			console.log('tetah');
 		}
 	} catch (error) {
 		console.log(error.message);

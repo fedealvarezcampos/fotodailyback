@@ -29,6 +29,12 @@
     },
     "site": {
       "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
     }
   }
 }
