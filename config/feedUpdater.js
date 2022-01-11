@@ -63,7 +63,7 @@ async function main() {
 				site: item?.link?.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0],
 				title: item?.title,
 				image: linkPreview?.images[0],
-				preview: item?.contentSnippet,
+				preview: item?.contentSnippet.slice(0, 200),
 				link: item?.link,
 				creator: item?.creator,
 				date: new Date(item?.pubDate)?.toISOString(),
