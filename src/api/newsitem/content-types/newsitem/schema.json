@@ -36,6 +36,9 @@
 		"date": {
 			"type": "string"
 		},
+		"likes": {
+			"type": "integer"
+		},
 		"users": {
 			"type": "relation",
 			"relation": "manyToMany",

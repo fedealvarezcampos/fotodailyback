@@ -3,32 +3,24 @@
 const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => ({
-	// async find(ctx) {
-	// 	const { query } = ctx;
+	async find(ctx) {
+		ctx.query = { ...ctx.query };
+		const user = ctx.state.user ?? null;
 
-	// 	const entity = await strapi.service('api::newsitem.newsitem').find(query);
+		const { data, meta } = await super.find(ctx);
 
-	// 	const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
-
-	// 	return this.transformResponse(sanitizedEntity);
-	// },
-
-	async likes(ctx) {
-		try {
-			const { id: postID } = ctx.params;
-
-			const user = ctx.state.user ?? null;
-
+		for (const item of data) {
 			const existingUserIDs = await strapi
 				.service('api::newsitem.newsitem')
-				.getAlreadyExistingUserIDs(postID);
+				.getAlreadyExistingUserIDs(item.id);
 
 			const isLiked = existingUserIDs?.includes(user?.id) ?? false;
 
-			return this.transformResponse({ id: postID, isLiked: isLiked });
-		} catch (err) {
-			ctx.body = err;
+			item.attributes.likes = existingUserIDs?.length;
+			item.attributes.isLiked = isLiked;
 		}
+
+		return { data, meta };
 	},
 
 	async like(ctx) {
@@ -41,14 +33,15 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 				.getAlreadyExistingUserIDs(postID);
 
 			let newUserIDs = [];
+			let isLiked;
 
 			if (existingUserIDs?.includes(userID)) {
 				newUserIDs = existingUserIDs.filter(id => id !== userID);
+				isLiked = false;
 			} else {
 				newUserIDs = [...existingUserIDs, userID];
+				isLiked = true;
 			}
-
-			console.log(newUserIDs);
 
 			const entity = await strapi.entityService.update('api::newsitem.newsitem', postID, {
 				data: {
@@ -59,11 +52,10 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 
 			const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
 
-			console.log(sanitizedEntity.users);
-
 			return this.transformResponse({
 				postID: sanitizedEntity?.id,
 				likes: sanitizedEntity?.users?.length,
+				isLiked: isLiked,
 			});
 		} catch (err) {
 			ctx.body = err;
