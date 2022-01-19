@@ -11,7 +11,7 @@
 	"options": {
 		"draftAndPublish": false,
 		"timestamps": true,
-		"privateAttributes": ["email"]
+		"privateAttributes": ["email", "blocked", "username", "provider", "updatedAt"]
 	},
 	"attributes": {
 		"username": {
@@ -68,7 +68,7 @@
 			"type": "relation",
 			"relation": "manyToMany",
 			"target": "api::newsitem.newsitem",
-			"inversedBy": "users"
+			"mappedBy": "users"
 		}
 	}
 }

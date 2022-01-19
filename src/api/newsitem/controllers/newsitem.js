@@ -14,7 +14,9 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 				.service('api::newsitem.newsitem')
 				.getAlreadyExistingUserIDs(item.id);
 
-			const isLiked = existingUserIDs?.includes(user?.id) ?? false;
+			const alreadyLiked = existingUserIDs?.includes(user?.id);
+
+			const isLiked = alreadyLiked ?? false;
 
 			item.attributes.likes = existingUserIDs?.length;
 			item.attributes.isLiked = isLiked;
@@ -52,9 +54,18 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 
 			const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
 
+			const numberOfUsersThatLikedTheItem = sanitizedEntity?.users?.length;
+
+			await strapi.db.query('api::newsitem.newsitem').update({
+				where: { id: postID },
+				data: {
+					likes: numberOfUsersThatLikedTheItem,
+				},
+			});
+
 			return this.transformResponse({
 				postID: sanitizedEntity?.id,
-				likes: sanitizedEntity?.users?.length,
+				likes: numberOfUsersThatLikedTheItem,
 				isLiked: isLiked,
 			});
 		} catch (err) {

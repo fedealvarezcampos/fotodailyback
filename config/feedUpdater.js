@@ -72,7 +72,7 @@ async function main() {
 
 			await strapi.service('api::newsitem.newsitem').create({ data: newsItem });
 
-			console.log('tetah');
+			console.log(newsItem);
 		}
 	} catch (error) {
 		console.log(error.message);

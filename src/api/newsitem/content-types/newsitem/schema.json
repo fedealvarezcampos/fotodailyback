@@ -8,7 +8,8 @@
 		"description": ""
 	},
 	"options": {
-		"draftAndPublish": true
+		"draftAndPublish": true,
+		"privateAttributes": ["updatedAt", "publishedAt"]
 	},
 	"pluginOptions": {},
 	"attributes": {
@@ -21,23 +22,18 @@
 		"link": {
 			"type": "string"
 		},
-		"creator": {
-			"type": "string"
-		},
-		"sponsored": {
-			"type": "boolean"
-		},
 		"site": {
 			"type": "string"
 		},
 		"image": {
 			"type": "string"
 		},
+		"likes": {
+			"type": "integer",
+			"default": 0
+		},
 		"date": {
 			"type": "string"
-		},
-		"likes": {
-			"type": "integer"
 		},
 		"users": {
 			"type": "relation",
