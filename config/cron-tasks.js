@@ -1,5 +1,5 @@
 module.exports = {
-	'55 20 * * *': async ({ strapi }) => {
+	'30 8 * * *': async ({ strapi }) => {
 		await strapi.config.tasks.updateFeed();
 	},
 };
