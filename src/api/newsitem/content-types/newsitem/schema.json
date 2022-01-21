@@ -1,45 +1,48 @@
 {
-	"kind": "collectionType",
-	"collectionName": "newsitems",
-	"info": {
-		"singularName": "newsitem",
-		"pluralName": "newsitems",
-		"displayName": "newsitems",
-		"description": ""
-	},
-	"options": {
-		"draftAndPublish": true,
-		"privateAttributes": ["updatedAt", "publishedAt"]
-	},
-	"pluginOptions": {},
-	"attributes": {
-		"title": {
-			"type": "string"
-		},
-		"preview": {
-			"type": "string"
-		},
-		"link": {
-			"type": "string"
-		},
-		"site": {
-			"type": "string"
-		},
-		"image": {
-			"type": "string"
-		},
-		"likes": {
-			"type": "integer",
-			"default": 0
-		},
-		"date": {
-			"type": "string"
-		},
-		"users": {
-			"type": "relation",
-			"relation": "manyToMany",
-			"target": "plugin::users-permissions.user",
-			"inversedBy": "newsitems"
-		}
-	}
+  "kind": "collectionType",
+  "collectionName": "newsitems",
+  "info": {
+    "singularName": "newsitem",
+    "pluralName": "newsitems",
+    "displayName": "newsitems",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true,
+    "privateAttributes": [
+      "updatedAt",
+      "publishedAt"
+    ]
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "preview": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "site": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "likes": {
+      "type": "integer",
+      "default": 0
+    },
+    "date": {
+      "type": "string"
+    },
+    "users": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "newsitems"
+    }
+  }
 }

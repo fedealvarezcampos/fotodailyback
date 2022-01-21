@@ -72,4 +72,79 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 			ctx.body = err;
 		}
 	},
+
+	async save(ctx) {
+		try {
+			const { id } = ctx.params;
+			const { id: userID } = ctx.state.user;
+
+			const postID = Number(id);
+
+			const entry = await strapi.entityService.findOne('plugin::users-permissions.user', userID, {
+				populate: { saveditems: true },
+			});
+
+			const sanitized = await this.sanitizeOutput(entry, ctx);
+
+			const savedItems = sanitized?.saveditems;
+
+			let itemIDs = [];
+
+			if (savedItems?.length > 0) {
+				for (const item of savedItems) {
+					itemIDs.push(item.id);
+				}
+			}
+
+			let newItemIDs = [];
+			let isSaved;
+
+			if (itemIDs?.includes(postID)) {
+				newItemIDs = itemIDs.filter(id => id !== postID);
+				isSaved = false;
+			} else {
+				newItemIDs = [postID, ...itemIDs];
+				isSaved = true;
+			}
+
+			console.log(newItemIDs);
+
+			const entity = await strapi.entityService.update('plugin::users-permissions.user', userID, {
+				data: {
+					saveditems: newItemIDs,
+				},
+				populate: { saveditems: true },
+			});
+
+			const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
+
+			const finalSavedItems = sanitizedEntity?.saveditems;
+
+			console.log(finalSavedItems);
+
+			return this.transformResponse({ saveditems: finalSavedItems, isSaved: isSaved });
+		} catch (err) {
+			ctx.body = err;
+		}
+	},
+
+	async savedItems(ctx) {
+		try {
+			const { id: userID } = ctx.state.user;
+
+			const entry = await strapi.entityService.findOne('plugin::users-permissions.user', userID, {
+				populate: { saveditems: true },
+			});
+
+			const sanitizedEntity = await this.sanitizeOutput(entry, ctx);
+
+			const savedItems = sanitizedEntity?.saveditems;
+
+			console.log(savedItems);
+
+			return this.transformResponse(savedItems);
+		} catch (err) {
+			ctx.body = err;
+		}
+	},
 }));

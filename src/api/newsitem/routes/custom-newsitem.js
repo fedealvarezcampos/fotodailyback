@@ -10,5 +10,36 @@ module.exports = {
 				},
 			},
 		},
+		{
+			method: 'POST',
+			path: '/newsitems/:id/save',
+			handler: 'newsitem.save',
+			config: {
+				find: {
+					auth: true,
+				},
+			},
+		},
+		{
+			method: 'GET',
+			path: '/newsitems/saved',
+			handler: 'newsitem.savedItems',
+			config: {
+				find: {
+					auth: true,
+				},
+			},
+		},
 	],
 };
+
+// {
+// 	method: 'GET',
+// 	path: '/newsitems/mynews',
+// 	handler: 'newsitem.userNews',
+// 	config: {
+// 		find: {
+// 			auth: true,
+// 		},
+// 	},
+// },
