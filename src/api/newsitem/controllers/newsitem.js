@@ -9,17 +9,26 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 
 		const { data, meta } = await super.find(ctx);
 
+		let savedItemsIDs = [];
+
+		if (user) {
+			savedItemsIDs = await strapi.service('api::newsitem.newsitem').getSavedItemsIDs(user.id);
+		}
+
 		for (const item of data) {
 			const existingUserIDs = await strapi
 				.service('api::newsitem.newsitem')
-				.getAlreadyExistingUserIDs(item.id);
+				.getAlreadyExistingUserIDs(item?.id);
 
 			const alreadyLiked = existingUserIDs?.includes(user?.id);
+			const alreadySaved = savedItemsIDs?.includes(item?.id);
 
 			const isLiked = alreadyLiked ?? false;
+			const isSaved = alreadySaved ?? false;
 
 			item.attributes.likes = existingUserIDs?.length;
 			item.attributes.isLiked = isLiked;
+			item.attributes.isSaved = isSaved;
 		}
 
 		return { data, meta };
@@ -80,21 +89,7 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 
 			const postID = Number(id);
 
-			const entry = await strapi.entityService.findOne('plugin::users-permissions.user', userID, {
-				populate: { saveditems: true },
-			});
-
-			const sanitized = await this.sanitizeOutput(entry, ctx);
-
-			const savedItems = sanitized?.saveditems;
-
-			let itemIDs = [];
-
-			if (savedItems?.length > 0) {
-				for (const item of savedItems) {
-					itemIDs.push(item.id);
-				}
-			}
+			const itemIDs = await strapi.service('api::newsitem.newsitem').getSavedItemsIDs(userID);
 
 			let newItemIDs = [];
 			let isSaved;
@@ -107,22 +102,14 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 				isSaved = true;
 			}
 
-			console.log(newItemIDs);
-
-			const entity = await strapi.entityService.update('plugin::users-permissions.user', userID, {
+			await strapi.entityService.update('plugin::users-permissions.user', userID, {
 				data: {
 					saveditems: newItemIDs,
 				},
 				populate: { saveditems: true },
 			});
 
-			const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
-
-			const finalSavedItems = sanitizedEntity?.saveditems;
-
-			console.log(finalSavedItems);
-
-			return this.transformResponse({ saveditems: finalSavedItems, isSaved: isSaved });
+			return this.transformResponse({ saveditem: postID, isSaved: isSaved });
 		} catch (err) {
 			ctx.body = err;
 		}
@@ -132,17 +119,26 @@ module.exports = createCoreController('api::newsitem.newsitem', ({ strapi }) => 
 		try {
 			const { id: userID } = ctx.state.user;
 
-			const entry = await strapi.entityService.findOne('plugin::users-permissions.user', userID, {
-				populate: { saveditems: true },
-			});
+			const itemIDs = await strapi.service('api::newsitem.newsitem').getSavedItemsIDs(userID);
 
-			const sanitizedEntity = await this.sanitizeOutput(entry, ctx);
+			let response = [];
 
-			const savedItems = sanitizedEntity?.saveditems;
+			for (const id of itemIDs) {
+				const existingUserIDs = await strapi
+					.service('api::newsitem.newsitem')
+					.getAlreadyExistingUserIDs(id);
 
-			console.log(savedItems);
+				const newsItem = await strapi.entityService.findOne('api::newsitem.newsitem', id);
 
-			return this.transformResponse(savedItems);
+				const alreadyLiked = existingUserIDs?.includes(userID);
+
+				const isLiked = alreadyLiked ?? false;
+				const isSaved = true;
+
+				response.push({ ...newsItem, isLiked, isSaved });
+			}
+
+			return this.transformResponse(response);
 		} catch (err) {
 			ctx.body = err;
 		}

@@ -1,13 +1,11 @@
 const { getLinkPreview } = require('link-preview-js');
 const Parser = require('rss-parser');
 
-// 1
 function diffInDays(date1, date2) {
 	const difference = Math.floor(date1) - Math.floor(date2);
 	return Math.floor(difference / 60 / 60 / 24);
 }
 
-// 2
 async function getNewFeedItemsFrom(feedUrl) {
 	const parser = new Parser();
 	const rss = await parser.parseURL(feedUrl);
@@ -19,7 +17,6 @@ async function getNewFeedItemsFrom(feedUrl) {
 	});
 }
 
-// 3
 async function getFeedUrls() {
 	const { results } = await strapi.service('api::feedsource.feedsource').find({
 		filters: {
@@ -30,7 +27,6 @@ async function getFeedUrls() {
 	return results;
 }
 
-// 4
 async function getNewFeedItems() {
 	let allNewFeedItems = [];
 
@@ -45,7 +41,6 @@ async function getNewFeedItems() {
 	return allNewFeedItems;
 }
 
-// 5
 async function main() {
 	try {
 		const feedItems = await getNewFeedItems();
@@ -67,19 +62,15 @@ async function main() {
 				link: item?.link,
 				creator: item?.creator,
 				date: new Date(item?.pubDate)?.toISOString(),
-				sponsored: false,
 			};
 
 			await strapi.service('api::newsitem.newsitem').create({ data: newsItem });
-
-			console.log(newsItem);
 		}
 	} catch (error) {
 		console.log(error.message);
 	}
 }
 
-// 6
 module.exports = {
 	main,
 };
