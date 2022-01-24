@@ -65,6 +65,8 @@ async function main() {
 			};
 
 			await strapi.service('api::newsitem.newsitem').create({ data: newsItem });
+
+			console.info(newsItem);
 		}
 	} catch (error) {
 		console.log(error.message);
