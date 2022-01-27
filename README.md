@@ -1,7 +1,41 @@
 # Fotodaily
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/developer-docs/latest/developer-resources/cli/CLI.html) (CLI) which lets you scaffold and manage your project in seconds.
+Photography related news aggregator that automatically fetches content from relevant sites every day.
 
-### `develop`
+### **_[Check it out! @vercel](https://fotodaily.vercel.app/)_**
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/developer-docs/latest/developer-resources/cli/CLI.html#strapi-develop)
+## Installing locally
+
+Just install all deps:
+
+```bash
+# with yarn
+yarn
+
+# or npm
+npm install
+```
+
+[Front side of things here.](https://github.com/fedealvarezcampos/fotodaily)
+
+_Create your admin account and set up .env accordingly._
+
+_Prod config is defined for Heroku, see Strapi docs and edit if deploying elsewhere._
+
+## Developing
+
+Once installed you can run in dev:
+
+```bash
+# with yarn
+yarn develop
+
+# or npm
+npm run develop
+```
+
+## Made with
+
+![Svelte](https://img.shields.io/badge/svelte-%23f1413d.svg?style=for-the-badge&logo=svelte&logoColor=white)  
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)  
+![Strapi](https://img.shields.io/badge/strapi-%232E7EEA.svg?style=for-the-badge&logo=strapi&logoColor=white)

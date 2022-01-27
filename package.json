@@ -1,8 +1,8 @@
 {
-	"name": "photodailyback",
+	"name": "fotodaily",
 	"private": true,
-	"version": "0.1.0",
-	"description": "A Strapi application",
+	"version": "1.0.0",
+	"description": "Fotodaily backend",
 	"scripts": {
 		"develop": "strapi develop",
 		"start": "strapi start",
@@ -14,17 +14,14 @@
 		"@strapi/plugin-i18n": "4.0.5",
 		"@strapi/plugin-users-permissions": "4.0.5",
 		"@strapi/strapi": "4.0.5",
-		"link-preview-js": "^2.1.10",
-		"pg": "^8.7.1",
-		"pg-connection-string": "^2.5.0",
-		"rss-parser": "^3.12.0",
+		"link-preview-js": "2.1.10",
+		"pg": "8.7.1",
+		"pg-connection-string": "2.5.0",
+		"rss-parser": "3.12.0",
 		"sqlite3": "5.0.2"
 	},
 	"author": {
 		"name": "Fede Álvarez"
-	},
-	"strapi": {
-		"uuid": "4e0c6f8a-da65-494d-9a08-aed2fa074715"
 	},
 	"engines": {
 		"node": "16.13.1",
