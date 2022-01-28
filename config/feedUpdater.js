@@ -12,8 +12,8 @@ async function getNewFeedItemsFrom(feedUrl) {
 
 	const todaysDate = new Date().getTime() / 1000;
 	return rss.items.filter(item => {
-		const blogPublishedDate = new Date(item?.pubDate).getTime() / 1000;
-		return diffInDays(todaysDate, blogPublishedDate) === 0;
+		const articleDate = new Date(item?.pubDate).getTime() / 1000;
+		return diffInDays(todaysDate, articleDate) === 0;
 	});
 }
 
@@ -32,8 +32,8 @@ async function getNewFeedItems() {
 
 	const feeds = await getFeedUrls();
 
-	for (let i = 0; i < feeds?.length; i++) {
-		const { link } = feeds[i];
+	for (article of feeds) {
+		const { link } = article;
 		const feedItems = await getNewFeedItemsFrom(link);
 		allNewFeedItems = [...allNewFeedItems, ...feedItems];
 	}
@@ -45,14 +45,8 @@ async function main() {
 	try {
 		const feedItems = await getNewFeedItems();
 
-		for (let i = 0; i < feedItems.length; i++) {
-			const item = feedItems[i];
-
-			const linkPreview = await getLinkPreview(item?.link, {
-				headers: {
-					'user-agent': 'googlebot',
-				},
-			});
+		for (item of feedItems) {
+			const linkPreview = await getLinkPreview(item?.link);
 
 			const newsItem = {
 				site: item?.link?.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0],
@@ -60,7 +54,6 @@ async function main() {
 				image: linkPreview?.images[0],
 				preview: item?.contentSnippet.slice(0, 200),
 				link: item?.link,
-				creator: item?.creator,
 				date: new Date(item?.pubDate)?.toISOString(),
 			};
 
@@ -69,7 +62,7 @@ async function main() {
 			console.info(newsItem);
 		}
 	} catch (error) {
-		console.log(error.message);
+		console.error(error.message);
 	}
 }
 
